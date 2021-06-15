@@ -67,28 +67,19 @@ const DESCRIPTIONS = [
 
 // Получаем рандомный индикатор
 
-const getRandomUniqueInteger = (min, max) => {
-  const uniqueNumbers = [];
-  return function () {
-    if (uniqueNumbers.length >= (max - min + 1) ) {
-      throw new Error(`Перебраны все числа из диапазона от ${min} до ${max}`);
-    }
-    let uniqueNumber;
-    do {
-      uniqueNumber = getRandomNumber(min, max);
-    } while (uniqueNumbers.includes(uniqueNumber));
-    uniqueNumbers.push(uniqueNumber);
-    return uniqueNumber;
-  };
-};
+function shuffle(array) {
+  for (let i = array.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1)); // случайный индекс от 0 до i
+    [array[i], array[j]] = [array[j], array[i]];
+  }
+}
 
-const commentIdGenerator = getRandomUniqueInteger(1, PHOTO_COUNT * MAX_PHOTO_COMMENTS);
+const getIdGenerator = shuffle(1, PHOTO_COUNT * MAX_PHOTO_COMMENTS);
 
 // Получаем рандомный элемент из массива
 
-const getRandomArrayElement = (elements) => {
-  return elements[getRandomNumber(0, elements.length - 1)];
-};
+const getRandomArrayElement = (elements) =>
+  elements [getRandomNumber(0, elements.length - 1)];
 
 // Получаем рандомное сообщение(ия) из массива MESSAGES
 
@@ -100,27 +91,23 @@ const getRandomMessage = () => {
 
 // Создание объекта с id, аватаром, именем и комментарием для фото
 
-const createComment = () => {
-  return {
-    id: commentIdGenerator(),
-    avatar: `img/avatar-${getRandomNumber(1, 6)}.svg`,
-    message: getRandomMessage(),
-    name: getRandomArrayElement(NAMES),
-  };
-};
+const createComment = () => ({
+  id: getIdGenerator(),
+  avatar: `img/avatar-${getRandomNumber(1, 6)}.svg`,
+  message: getRandomMessage(),
+  name: getRandomArrayElement(NAMES),
+});
 
 // Создание объекта с инфой о фото, описание, лайками и комментарии
 
-const createPhotoDescription = (id) => {
-  return {
-    id: id,
-    url: `photos/${id}.jpg`,
-    description: getRandomArrayElement(DESCRIPTIONS),
-    likes: getRandomNumber(15, 200),
-    comments: new Array(getRandomNumber(1, MAX_PHOTO_COMMENTS)).fill(null).map(createComment),
-  };
-};
+const createPhotoDescription = (id) => ({
+  id: id,
+  url: `photos/${id}.jpg`,
+  description: getRandomArrayElement(DESCRIPTIONS),
+  likes: getRandomNumber(15, 200),
+  comments: new Array(getRandomNumber(1, MAX_PHOTO_COMMENTS)).fill(null).map(createComment),
+});
 
-const photos = new Array(PHOTO_COUNT).fill().map(() => createPhotoDescription());
+const photos = new Array(PHOTO_COUNT).fill().map((id) => createPhotoDescription(id));
 
 console.log(photos);
