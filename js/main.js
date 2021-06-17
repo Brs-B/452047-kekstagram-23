@@ -72,6 +72,8 @@ function shuffle(array) {
     const j = Math.floor(Math.random() * (i + 1)); // случайный индекс от 0 до i
     [array[i], array[j]] = [array[j], array[i]];
   }
+
+  return shuffle;
 }
 
 const getIdGenerator = shuffle(1, PHOTO_COUNT * MAX_PHOTO_COMMENTS);
@@ -108,6 +110,6 @@ const createPhotoDescription = (id) => ({
   comments: new Array(getRandomNumber(1, MAX_PHOTO_COMMENTS)).fill(null).map(createComment),
 });
 
-const photos = new Array(PHOTO_COUNT).fill().map((id) => createPhotoDescription(id));
+const photos = () => new Array(PHOTO_COUNT).fill(null).map((id) => createPhotoDescription(id));
 
 console.log(photos);
